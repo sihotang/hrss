@@ -1,11 +1,9 @@
 function exportPDF() {
-    var tables = [{
-        columns: [],
-        data: [],
-    }, {
-        columns: [],
-        data: []
-    }];
+    var table = {
+    	title: 'Table',
+    	columns: [],
+    	data: []
+    };
 
-    Report.exportTablesToPdf(tables).open();
+    Report.exportTableToPdf(table).open();
 }

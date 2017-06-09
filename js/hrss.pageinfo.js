@@ -1,18 +1,29 @@
-//
+/**
+ * [PageInfo description]
+ */
 var PageInfo = function () {
-
+	/**
+	 * [user description]
+	 * @type {Object}
+	 */
 	var user = {
 		empno: { label: 'Employee No', value: '' },
 		empname: { label: 'Employee Name', value: '' },
 		grade: { label: 'Grade Name', value: '' },
 		workgroup: { label: 'Work Unit', value: '' }
 	};
-
+	/**
+	 * [period description]
+	 * @type {Object}
+	 */
 	var period = {
 		period: { label: 'Period', value: '' },
 		year: { label: 'Year', value: '' }
 	};
-
+	/**
+	 * [handleInitUser description]
+	 * @return {[type]} [description]
+	 */
 	var handleInitUser = function () {
 		$('[data-init-user]').each(function() {
 			var dataInit = $(this).attr('data-init-user');
@@ -30,7 +41,10 @@ var PageInfo = function () {
 			}
 		});
 	};
-
+	/**
+	 * [handleInitPeriod description]
+	 * @return {[type]} [description]
+	 */
 	var handleInitPeriod = function () {
 		$('[data-init-period]').each(function() {
 			var dataInit = $(this).attr('data-init-user');
@@ -44,20 +58,36 @@ var PageInfo = function () {
 			}
 		});
 	};
-
+	/**
+	 * 
+	 */
 	return {
+		/**
+		 * [init description]
+		 * @return {[type]} [description]
+		 */
 		init: function () {
 			handleInitUser();
 			handleInitPeriod();
 		},
-
+		/**
+		 * [user description]
+		 * @type {[type]}
+		 */
 		user: user,
-
+		/**
+		 * [period description]
+		 * @type {[type]}
+		 */
 		period: period
 	};
 
 }();
-
+/**
+ * [description]
+ * @param  {[type]} ) {              PageInfo.init(); } [description]
+ * @return {[type]}   [description]
+ */
 jQuery(document).ready(function() {
    PageInfo.init(); 
 });
