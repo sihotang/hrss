@@ -5,14 +5,21 @@
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet' type='text/css'>
 </head>
 <body>
-	<input type="text" data-init-user="empno" value="Sopar" />
+	<input type="text" data-init-user="empno" value="077" />
+	<input type="text" data-init-user="empname" value="Sihotang" />
+	<input type="text" data-init-user="grade" value="Project Manager" />
+	<input type="text" data-init-user="workgroup" value="Sync" />
+
+	<input type="text" data-init-period="year" value="2017" />
+	<input type="text" data-init-period="period" value="Beginning of the Year" />	
+
 	<input type="button" value="Export PDF" onclick="exportPDF()" />
 
 	<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'></script>
 	<script type="text/javascript" src='bower_components/pdfmake/build/pdfmake.min.js'></script>
 	<script type="text/javascript" src='bower_components/pdfmake/build/vfs_fonts.js'></script>
 	<script type="text/javascript" src='js/pageinfo.js'></script>
-	<script type="text/javascript" src='js/templates/behaviourplan.js'></script>
-	<script type="text/javascript" src='js/hrss.pdfmake.js'></script>
+	<script type="text/javascript" src='js/reports/basic.report.js'></script>
+	<script type="text/javascript" src='js/hrss.report.js'></script>
 </body>
 </html>

@@ -3,7 +3,9 @@ var PageInfo = function () {
 
 	var user = {
 		empno: { label: 'Employee No', value: '' },
-		empname: { label: 'Employee Nam', value: '' }
+		empname: { label: 'Employee Name', value: '' },
+		grade: { label: 'Grade Name', value: '' },
+		workgroup: { label: 'Work Unit', value: '' }
 	};
 
 	var period = {
@@ -13,13 +15,17 @@ var PageInfo = function () {
 
 	var handleInitUser = function () {
 		$('[data-init-user]').each(function() {
-			var userInit = $(this).attr('data-init-user');
+			var dataInit = $(this).attr('data-init-user');
 
-			if (userInit == 'empno') {
+			if (dataInit == 'empno') {
 				user.empno.value = $(this).val();
-			} else if (userInit == 'empname') {
+			} else if (dataInit == 'empname') {
 				user.empname.value = $(this).val();
-			} else {
+			} else if (dataInit == 'grade') {
+				user.grade.value = $(this).val();
+			}else if (dataInit == 'workgroup') {
+				user.workgroup.value = $(this).val();
+			}else {
 				return;
 			}
 		});
@@ -27,11 +33,11 @@ var PageInfo = function () {
 
 	var handleInitPeriod = function () {
 		$('[data-init-period]').each(function() {
-			var periodInit = $(this).attr('data-init-user');
+			var dataInit = $(this).attr('data-init-user');
 
-			if (periodInit == 'period') {
+			if (dataInit == 'period') {
 				period.period.value = $(this).val();
-			} else if (periodInit == 'year') {
+			} else if (dataInit == 'year') {
 				period.year.value = $(this).val();
 			} else {
 				return;

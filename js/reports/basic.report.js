@@ -1,6 +1,8 @@
-// playground requires you to assign document definition to a variable called dd
+
 PageInfo.init();
-var docBehaviourPlan = {
+Report.init();
+
+var reportBasic = {
     pageSize: 'A4',
     pageOrientation: 'landscape',
     pageMargins: [40, 80, 80, 80],
