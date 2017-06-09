@@ -1,4 +1,6 @@
-//
+/**
+ * [Report description]
+ */
 var Report = function() {
     /**
      * 
@@ -77,6 +79,11 @@ var Report = function() {
                 fontSize: 18,
                 bold: true,
                 margin: [0, 50, 0, 10]
+            },
+            titleTable: {
+                fontSize: 16,
+                bold: true,
+                margin: [0, 10, 0, 5]
             }
         };
     };
@@ -97,6 +104,20 @@ var Report = function() {
                 body: [
                     ['Column 1', 'Column 2', 'Column 3'],
                     ['One value goes here', 'Another one here', 'OK?']
+                ]
+            }
+        };
+    };
+    /**
+     * [undefinedTable description]
+     * @return {[type]} [description]
+     */
+    var undefinedTable = function() {
+        return {
+            table: {
+                body: [
+                    ['Undefined'],
+                    ['Undefined Table']
                 ]
             }
         };
@@ -125,11 +146,8 @@ var Report = function() {
      * @return {[type]}         [description]
      */
     var extendOptions = function(options) {
-        if (options === 'undefined') {
-            options = $.extend({}, reportOptions);
-        } else {
-            options = $.extend({}, reportOptions, options);
-        }
+        if (options === 'undefined') options = $.extend({}, reportOptions);
+        else options = $.extend(reportOptions, options);
         return options;
     }
     /**
@@ -138,7 +156,45 @@ var Report = function() {
      * @return {[type]}       [description]
      */
     var setupContentTable = function(table) {
-        return defaultTable();
+        var content = [],
+            body = [],
+            dtable = {};
+        // Check title on table properties
+        if (typeof table.title === 'object') {
+            content.push({
+                text: table.title.text,
+                style: table.title.style || 'titleTable'
+            });
+        } else if (typeof table.title === 'string') content.push(table.title);
+        // Check columns on table properties
+        if (typeof table.columns === 'undefined') content.push(undefinedTable());
+        else {
+            var columns = [],
+                widths = [],
+                data = [];
+            //Push column & width
+            if (table.columns.length > 0) {
+                $.each(table.columns, function(index, column) {
+                    if (typeof column.text === 'undefined') columns.push(column.name);
+                    else columns.push(column.text);
+                    data.push(table.data[index][column.name]);
+                    if (typeof column.width === 'undefined') widths.push('auto');
+                    else widths.push(column.width);
+                });
+            }
+            // Push body
+            body.push(columns);
+            body.push(data);
+            // Set to table
+            dtable.widths = widths;
+            dtable.body = body;
+        }
+        // Push content
+        content.push({
+            style: table.style || 'tableBasic',
+            table: dtable
+        });
+        return content;
     };
     /**
      * 
@@ -174,8 +230,8 @@ var Report = function() {
          * @return {[type]}         [description]
          */
         exportDataToPdf: function(data, options, layout) {
-            if (typeof layout === 'undefined') return pdfMake.createPdf(layout);
-            else return pdfMake.createPdf(basicReport(data, extendOptions(options)));
+            if (typeof layout === 'undefined') return pdfMake.createPdf(basicReport(data, extendOptions(options)));
+            else return pdfMake.createPdf(layout);
         },
         /**
          * [exportTableToPdf description]
@@ -185,10 +241,8 @@ var Report = function() {
          * @return {[type]}         [description]
          */
         exportTableToPdf: function(table, options, layout) {
-            var content = [];
-            content.push(setupContentTable(table));
-            if (typeof layout === 'undefined') return pdfMake.createPdf(basicReport(content, extendOptions(options)));
-            else pdfMake.createPdf(layout);
+            if (typeof layout === 'undefined') return pdfMake.createPdf(basicReport(setupContentTable(table), extendOptions(options)));
+            else return pdfMake.createPdf(layout);
         },
         /**
          * [exportTablesToPdf description]
@@ -205,7 +259,7 @@ var Report = function() {
                 }
             }
             if (typeof layout === 'undefined') return pdfMake.createPdf(basicReport(content, extendOptions(options)));
-            else pdfMake.createPdf(layout);
+            else return pdfMake.createPdf(layout);
         }
     };
 }();
