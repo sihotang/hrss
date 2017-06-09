@@ -2,7 +2,7 @@ function exportPDF() {
     var table = {
         title: 'Behaviour Plan',
         columns: [
-	   		{name:'id',index:'id', width:60, sorttype:"int"},
+	   		{name:'id',index:'id', width:60, sorttype:"int", hidden: false},
 	   		{name:'invdate',index:'invdate', width:90, sorttype:"date"},
 	   		{name:'name',index:'name', width:100},
 	   		{name:'amount',index:'amount', width:80, align:"right",sorttype:"float"},

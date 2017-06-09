@@ -175,11 +175,13 @@ var Report = function() {
             //Push column & width
             if (table.columns.length > 0) {
                 $.each(table.columns, function(index, column) {
-                    if (typeof column.text === 'undefined') columns.push(column.name);
-                    else columns.push(column.text);
-                    data.push(table.data[index][column.name]);
-                    if (typeof column.width === 'undefined') widths.push('auto');
-                    else widths.push(column.width);
+                    if (typeof column.hidden === 'undefined' || column.hidden) {
+                        if (typeof column.text === 'undefined') columns.push(column.name);
+                        else columns.push(column.text);
+                        data.push(table.data[index][column.name]);
+                        if (typeof column.width === 'undefined') widths.push('auto');
+                        else widths.push(column.width);
+                    }
                 });
             }
             // Push body
