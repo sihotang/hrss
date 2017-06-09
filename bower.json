@@ -1,0 +1,17 @@
+{
+  "name": "sihotang-pdfmake",
+  "authors": [
+    "Sihotang <soparsihotang@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
