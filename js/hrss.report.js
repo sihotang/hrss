@@ -11,8 +11,8 @@ var Report = function () {
 		}
 	};
 
-};
+}();
 
-function exportPDF() {
-	pdfMake.createPdf(reportBasic).open();
-}
+jQuery(document).ready(function() {
+   Report.init(); 
+});
