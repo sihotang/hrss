@@ -1,4 +1,4 @@
-
+//
 var PageInfo = function () {
 
 	var user = {
@@ -23,9 +23,9 @@ var PageInfo = function () {
 				user.empname.value = $(this).val();
 			} else if (dataInit == 'grade') {
 				user.grade.value = $(this).val();
-			}else if (dataInit == 'workgroup') {
+			} else if (dataInit == 'workgroup') {
 				user.workgroup.value = $(this).val();
-			}else {
+			} else {
 				return;
 			}
 		});

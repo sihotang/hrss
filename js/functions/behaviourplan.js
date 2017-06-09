@@ -1,3 +1,11 @@
 function exportPDF() {
-	pdfMake.createPdf(reportBasic).open();
+    var tables = [{
+        columns: [],
+        data: [],
+    }, {
+        columns: [],
+        data: []
+    }];
+
+    Report.exportTablesToPdf(tables).open();
 }
