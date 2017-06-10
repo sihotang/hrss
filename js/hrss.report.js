@@ -54,7 +54,7 @@ var Report = function() {
      * @return {[type]} [description]
      */
     var defaultHeader = function() {
-    	// return {
+        // return {
         //     table: {
         //         widths: [100, 'auto'],
         //         body: [
@@ -79,15 +79,30 @@ var Report = function() {
             columns: [{
                 image: 'sampleImage.jpg',
                 width: 100
-            }, {
-                stack: [ reportOptions.title || 'Report Title', {
-                    text: reportOptions.subtitle || 'This is a subtitle',
-                    style: 'subtitle'
-                }, ],
-                style: 'title'
-            }]
+            }, defaultTitle()]
         };
     };
+    /**
+     * [defaultTitle description]
+     * @return {[type]} [description]
+     */
+    var defaultTitle = function() {
+        return {
+            stack: [reportOptions.title || 'Report Title', defaultSubTitle()],
+            style: 'title'
+        }
+    }
+    /**
+     * [defaultSubTitle description]
+     * @return {[type]} [description]
+     */
+    var defaultSubTitle = function() {
+        if (!issetPeriodInfo) return defineHeaderPeriodInfo();
+        return {
+            text: reportOptions.subtitle || '',
+            style: 'subtitle'
+        };
+    }
     /**
      * [defaultContent description]
      * @return {[type]} [description]
@@ -153,7 +168,7 @@ var Report = function() {
      */
     var defaultStyle = function() {
         return {
-        	fontSize: 10
+            fontSize: 10
         };
     };
     /**
@@ -182,6 +197,31 @@ var Report = function() {
                     ['Undefined Table']
                 ]
             }
+        };
+    };
+    /**
+     * [defineUserInit description]
+     * @return {[type]} [description]
+     */
+    var defineHeaderPeriodInfo = function() {
+        PageInfo.init();
+        return {
+            columns: [{
+                text: PageInfo.period.period.label
+            }, {
+                text: ':'
+            }, {
+                text: PageInfo.period.period.value
+            }, {
+                text: '/'
+            }, {
+                text: PageInfo.period.year.label
+            }, {
+                text: ':'
+            }, {
+                text: PageInfo.period.year.value
+            }],
+            style: 'subtitle'
         };
     };
     /**
@@ -301,7 +341,10 @@ var Report = function() {
                 $.each(columns, function(index, column) {
                     if (typeof column.hidden === 'undefined' || column.hidden) {
                         if (typeof column.text === 'undefined') textColumns.push(column.name);
-                        else textColumns.push({ text: column.text, alignment: (typeof column.align !== 'undefined') ? column.align : 'center' });
+                        else textColumns.push({
+                            text: column.text,
+                            alignment: (typeof column.align !== 'undefined') ? column.align : 'center'
+                        });
                         visibleColumns.push(column.name);
                         if (typeof column.width === 'undefined') widths.push('auto');
                         else widths.push(column.width);
@@ -311,7 +354,10 @@ var Report = function() {
                 // Binding Body by data
                 $.each(table.data, function(index, value) {
                     var data = [];
-                    if (autonumber) data.push({ text: index + 1, alignment: 'right' });
+                    if (autonumber) data.push({
+                        text: index + 1,
+                        alignment: 'right'
+                    });
                     $.each(visibleColumns, function(idx, col) {
                         if (typeof value[col] !== 'undefined') data.push(value[col]);
                     });
