@@ -7,10 +7,10 @@ var PageInfo = function () {
 	 * @type {Object}
 	 */
 	var user = {
-		empno: { label: 'Employee No', value: '' },
-		empname: { label: 'Employee Name', value: '' },
-		grade: { label: 'Grade Name', value: '' },
-		workgroup: { label: 'Work Unit', value: '' }
+		empno: { label: 'NO REG', value: '' },
+		empname: { label: 'EMPLOYEE', value: '' },
+		grade: { label: 'LEVEL', value: '' },
+		workgroup: { label: 'WORKUNIT', value: '' }
 	};
 	/**
 	 * [period description]

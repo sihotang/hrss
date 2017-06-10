@@ -11,6 +11,26 @@ var Report = function() {
      */
     var reportOptions;
     /**
+     * [isPageNumber description]
+     * @type {Boolean}
+     */
+    var isPageNumber = true;
+    /**
+     * [issetUserInfo description]
+     * @type {Boolean}
+     */
+    var issetUserInfo = true;
+    /**
+     * [issetPeriodInfo description]
+     * @type {Boolean}
+     */
+    var issetPeriodInfo = true;
+    /**
+     * [content description]
+     * @type {Array}
+     */
+    var reportContent = [];
+    /**
      * [orientation description]
      * @type {Object}
      */
@@ -26,7 +46,7 @@ var Report = function() {
         return {
             paper: 'A4',
             orientation: orientation.potrait,
-            margin: [40, 80, 80, 80]
+            margin: [40, 80, 40, 60]
         };
     };
     /**
@@ -35,7 +55,7 @@ var Report = function() {
      */
     var defaultHeader = function() {
         return {
-            margin: [40, 20, 20, 10],
+            margin: 10,
             columns: [{
                 image: 'sampleImage.jpg',
                 width: 100
@@ -47,6 +67,15 @@ var Report = function() {
                 style: 'title'
             }]
         };
+    };
+    /**
+     * [defaultContent description]
+     * @return {[type]} [description]
+     */
+    var defaultContent = function() {
+        if (!issetUserInfo) return reportContent;
+        reportContent.push(defineContentUserInfo());
+        return reportContent;
     };
     /**
      * [defaultFooter description]
@@ -76,14 +105,17 @@ var Report = function() {
     var defaultStyles = function() {
         return {
             header: {
-                fontSize: 18,
+                fontSize: 12,
                 bold: true,
-                margin: [0, 50, 0, 10]
+                margin: [0, 40, 0, 10]
             },
             titleTable: {
                 fontSize: 16,
                 bold: true,
                 margin: [0, 10, 0, 5]
+            },
+            tableBasic: {
+                margin: [0, 5, 0, 15]
             }
         };
     };
@@ -123,6 +155,50 @@ var Report = function() {
         };
     };
     /**
+     * [defineUserInit description]
+     * @return {[type]} [description]
+     */
+    var defineContentUserInfo = function() {
+        PageInfo.init();
+        return {
+            style: 'header',
+            stack: [{
+                columns: [{
+                    width: 150,
+                    text: PageInfo.user.empno.label + ' / ' + PageInfo.user.empname.label
+                }, {
+                    width: 'auto',
+                    text: ':'
+                }, {
+                    width: '*',
+                    text: PageInfo.user.empno.value + ' / ' + PageInfo.user.empname.value
+                }]
+            }, {
+                columns: [{
+                    width: 150,
+                    text: PageInfo.user.grade.label
+                }, {
+                    width: 'auto',
+                    text: ':'
+                }, {
+                    width: '*',
+                    text: PageInfo.user.grade.value
+                }]
+            }, {
+                columns: [{
+                    width: 150,
+                    text: PageInfo.user.workgroup.label
+                }, {
+                    width: 'auto',
+                    text: ':'
+                }, {
+                    width: '*',
+                    text: PageInfo.user.workgroup.value
+                }]
+            }]
+        };
+    };
+    /**
      * [basicReport description]
      * @param  {[type]} content [description]
      * @param  {[type]} options [description]
@@ -134,8 +210,8 @@ var Report = function() {
             pageOrientation: options.page.orientation,
             pageMargins: options.page.margin,
             header: options.header,
-            footer: options.footer,
             content: content,
+            footer: options.footer,
             styles: options.styles,
             defaultStyle: options.defaultStyle
         };
@@ -163,7 +239,7 @@ var Report = function() {
                 name: 'number',
                 index: 'number',
                 text: 'No.',
-                width: 50,
+                width: 30,
                 align: "right"
             },
             autonumber = table.autonumber || false;
@@ -173,7 +249,12 @@ var Report = function() {
                 text: table.title.text,
                 style: table.title.style || 'titleTable'
             });
-        } else if (typeof table.title === 'string') content.push(table.title);
+        } else if (typeof table.title === 'string') {
+            content.push({
+                text: table.title,
+                style: 'titleTable'
+            });
+        }
         // Check columns on table properties
         if (typeof table.columns === 'undefined') content.push(undefinedTable());
         else {
@@ -228,15 +309,20 @@ var Report = function() {
          * @return {[type]}         [description]
          */
         init: function(options) {
-            PageInfo.init();
-            options = $.extend(options, {
-                page: defaultPage(),
-                header: defaultHeader(),
-                footer: defaultFooter,
-                styles: defaultStyles(),
-                defaultStyle: defaultStyle()
-            });
+            content = defaultContent(),
+                options = $.extend(options, {
+                    page: defaultPage(),
+                    header: defaultHeader(),
+                    footer: defaultFooter,
+                    content: content,
+                    styles: defaultStyles(),
+                    defaultStyle: defaultStyle(),
+                    pageNumber: isPageNumber,
+                    userInfo: issetUserInfo,
+                    periodInfo: issetPeriodInfo
+                });
             report = this;
+            reportContent = content;
             reportOptions = options;
         },
         /**
@@ -245,6 +331,27 @@ var Report = function() {
          */
         orientation: orientation,
         /**
+         * [isPageNumber description]
+         * @return {Boolean} [description]
+         */
+        isPageNumber: function() {
+            return isPageNumber;
+        },
+        /**
+         * [issetUserInfo description]
+         * @return {[type]} [description]
+         */
+        issetUserInfo: function() {
+            return issetUserInfo;
+        },
+        /**
+         * [issetPeriodInfo description]
+         * @return {[type]} [description]
+         */
+        issetPeriodInfo: function() {
+            return issetPeriodInfo;
+        },
+        /**
          * [exportDataToPdf description]
          * @param  {[type]} data    [description]
          * @param  {[type]} options [description]
@@ -252,7 +359,8 @@ var Report = function() {
          * @return {[type]}         [description]
          */
         exportDataToPdf: function(data, options, layout) {
-            if (typeof layout === 'undefined') return pdfMake.createPdf(basicReport(data, extendOptions(options)));
+            reportContent.push(data);
+            if (typeof layout === 'undefined') return pdfMake.createPdf(basicReport(reportContent, extendOptions(options)));
             else return pdfMake.createPdf(layout);
         },
         /**
@@ -263,7 +371,8 @@ var Report = function() {
          * @return {[type]}         [description]
          */
         exportTableToPdf: function(table, options, layout) {
-            if (typeof layout === 'undefined') return pdfMake.createPdf(basicReport(setupContentTable(table), extendOptions(options)));
+            reportContent.push(setupContentTable(table));
+            if (typeof layout === 'undefined') return pdfMake.createPdf(basicReport(reportContent, extendOptions(options)));
             else return pdfMake.createPdf(layout);
         },
         /**
@@ -274,13 +383,12 @@ var Report = function() {
          * @return {[type]}         [description]
          */
         exportTablesToPdf: function(tables, options, layout) {
-            var content = [];
             if (tables.length > 0) {
                 for (i = 0; i < tables.length; i++) {
-                    content.push(setupContentTable(tables[i]));
+                    reportContent.push(setupContentTable(tables[i]));
                 }
             }
-            if (typeof layout === 'undefined') return pdfMake.createPdf(basicReport(content, extendOptions(options)));
+            if (typeof layout === 'undefined') return pdfMake.createPdf(basicReport(reportContent, extendOptions(options)));
             else return pdfMake.createPdf(layout);
         }
     };
