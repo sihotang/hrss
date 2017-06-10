@@ -46,7 +46,7 @@ var Report = function() {
         return {
             paper: 'A4',
             orientation: orientation.potrait,
-            margin: [40, 80, 40, 60]
+            margin: [72, 150]
         };
     };
     /**
@@ -54,14 +54,34 @@ var Report = function() {
      * @return {[type]} [description]
      */
     var defaultHeader = function() {
+    	// return {
+        //     table: {
+        //         widths: [100, 'auto'],
+        //         body: [
+        //             ['', ''],
+        //             [{
+        //                 image: 'sampleImage.jpg',
+        //                 width: 100
+        //             }, {
+        //                 stack: ['Report Title', {
+        //                     text: 'This is a subtitle',
+        //                     style: 'subtitle'
+        //                 }],
+        //                 style: 'title'
+        //             }]
+        //         ]
+        //     },
+        //     layout: 'noBorders',
+        //     margin: [40, 20, 10, 10]
+        // };
         return {
-            margin: 10,
+            margin: [40, 10, 10, 10],
             columns: [{
                 image: 'sampleImage.jpg',
                 width: 100
             }, {
-                stack: ['Report Title', {
-                    text: 'This is a subtitle',
+                stack: [ reportOptions.title || 'Report Title', {
+                    text: reportOptions.subtitle || 'This is a subtitle',
                     style: 'subtitle'
                 }, ],
                 style: 'title'
@@ -104,13 +124,21 @@ var Report = function() {
      */
     var defaultStyles = function() {
         return {
+            title: {
+                fontSize: 18,
+                bold: true,
+            },
+            subtitle: {
+                fontSize: 14,
+                bold: true,
+            },
             header: {
                 fontSize: 12,
                 bold: true,
-                margin: [0, 40, 0, 10]
+                margin: [0, 80, 0, 10]
             },
             titleTable: {
-                fontSize: 16,
+                fontSize: 12,
                 bold: true,
                 margin: [0, 10, 0, 5]
             },
@@ -124,7 +152,9 @@ var Report = function() {
      * @return {[type]} [description]
      */
     var defaultStyle = function() {
-        return {};
+        return {
+        	fontSize: 10
+        };
     };
     /**
      * [defaultTable description]
@@ -206,13 +236,13 @@ var Report = function() {
      */
     var basicReport = function(content, options) {
         return {
-            pageSize: options.page.paper,
-            pageOrientation: options.page.orientation,
-            pageMargins: options.page.margin,
             header: options.header,
             content: content,
             footer: options.footer,
             styles: options.styles,
+            pageSize: options.page.paper,
+            pageOrientation: options.page.orientation,
+            pageMargins: options.page.margin,
             defaultStyle: options.defaultStyle
         };
     };
@@ -271,7 +301,7 @@ var Report = function() {
                 $.each(columns, function(index, column) {
                     if (typeof column.hidden === 'undefined' || column.hidden) {
                         if (typeof column.text === 'undefined') textColumns.push(column.name);
-                        else textColumns.push(column.text);
+                        else textColumns.push({ text: column.text, alignment: (typeof column.align !== 'undefined') ? column.align : 'center' });
                         visibleColumns.push(column.name);
                         if (typeof column.width === 'undefined') widths.push('auto');
                         else widths.push(column.width);
@@ -281,7 +311,7 @@ var Report = function() {
                 // Binding Body by data
                 $.each(table.data, function(index, value) {
                     var data = [];
-                    if (autonumber) data.push(index + 1);
+                    if (autonumber) data.push({ text: index + 1, alignment: 'right' });
                     $.each(visibleColumns, function(idx, col) {
                         if (typeof value[col] !== 'undefined') data.push(value[col]);
                     });
@@ -295,7 +325,8 @@ var Report = function() {
         // Push content
         content.push({
             style: table.style || 'tableBasic',
-            table: dtable
+            table: dtable,
+            layout: 'lightHorizontalLines'
         });
         return content;
     };
@@ -312,7 +343,7 @@ var Report = function() {
             content = defaultContent(),
                 options = $.extend(options, {
                     page: defaultPage(),
-                    header: defaultHeader(),
+                    header: defaultHeader,
                     footer: defaultFooter,
                     content: content,
                     styles: defaultStyles(),
