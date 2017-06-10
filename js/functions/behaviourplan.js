@@ -1,6 +1,7 @@
 function exportPDF() {
     var table = {
         title: 'Behaviour Plan',
+        autonumber: true,
         columns: [
 	   		{name:'id',index:'id', width:60, sorttype:"int", hidden: false},
 	   		{name:'invdate',index:'invdate', width:90, sorttype:"date"},

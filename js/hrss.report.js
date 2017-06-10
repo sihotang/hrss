@@ -158,7 +158,15 @@ var Report = function() {
     var setupContentTable = function(table) {
         var content = [],
             body = [],
-            dtable = {};
+            dtable = {},
+            number = {
+                name: 'number',
+                index: 'number',
+                text: 'No.',
+                width: 50,
+                align: "right"
+            },
+            autonumber = table.autonumber || false;
         // Check title on table properties
         if (typeof table.title === 'object') {
             content.push({
@@ -170,23 +178,35 @@ var Report = function() {
         if (typeof table.columns === 'undefined') content.push(undefinedTable());
         else {
             var columns = [],
-                widths = [],
-                data = [];
+                textColumns = [],
+                visibleColumns = [],
+                hiddenColumns = [],
+                widths = [];
             //Push column & width
             if (table.columns.length > 0) {
-                $.each(table.columns, function(index, column) {
+                // Binding Header by columns
+                columns = table.columns;
+                if (autonumber) columns.unshift(number);
+                $.each(columns, function(index, column) {
                     if (typeof column.hidden === 'undefined' || column.hidden) {
-                        if (typeof column.text === 'undefined') columns.push(column.name);
-                        else columns.push(column.text);
-                        data.push(table.data[index][column.name]);
+                        if (typeof column.text === 'undefined') textColumns.push(column.name);
+                        else textColumns.push(column.text);
+                        visibleColumns.push(column.name);
                         if (typeof column.width === 'undefined') widths.push('auto');
                         else widths.push(column.width);
-                    }
+                    } else hiddenColumns.push(column.name);
+                });
+                body.push(textColumns);
+                // Binding Body by data
+                $.each(table.data, function(index, value) {
+                    var data = [];
+                    if (autonumber) data.push(index + 1);
+                    $.each(visibleColumns, function(idx, col) {
+                        if (typeof value[col] !== 'undefined') data.push(value[col]);
+                    });
+                    body.push(data);
                 });
             }
-            // Push body
-            body.push(columns);
-            body.push(data);
             // Set to table
             dtable.widths = widths;
             dtable.body = body;
